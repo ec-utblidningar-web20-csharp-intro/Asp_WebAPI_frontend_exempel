@@ -18,14 +18,6 @@ const lat2px = rect.height / (bottomRight.lat - topLeft.lat);
 const px2lon = 1.0 / lon2px;
 const px2lat = 1.0 / lat2px;
 
-/*
-{
-  "message": "string",
-  "longitude": 0,
-  "latitude": 0,
-  "id": 0
-}
-*/
 function addHtmlAtLonLat(html, lon, lat) {
   const parent = document.querySelector("main");
   parent.insertAdjacentHTML("beforeend", html);
@@ -37,14 +29,14 @@ function addHtmlAtLonLat(html, lon, lat) {
   return child;
 }
 
-function addGeoMessage(geoMessage) {
-  const lon = geoMessage.longitude;
-  const lat = geoMessage.latitude;
+function addGeoComment(geoComment) {
+  const lon = geoComment.longitude;
+  const lat = geoComment.latitude;
 
   addHtmlAtLonLat(
     /*html*/ `
         <div class="message">
-            <p>${geoMessage.message}</p>
+            <p>${geoComment.message}</p>
             <p>Lon: ${lon}, Lat: ${lat}</p>
         </div>`,
     lon,
@@ -52,15 +44,7 @@ function addGeoMessage(geoMessage) {
   );
 }
 
-/*
-{
-  "message": "string",
-  "longitude": 0,
-  "latitude": 0,
-  "id": 0
-}
-*/
-function addNewGeoMessageForm(lon, lat) {
+function addNewGeoCommentForm(lon, lat) {
   form = addHtmlAtLonLat(
     /*html*/ `
         <form class="message">
@@ -81,6 +65,13 @@ function addNewGeoMessageForm(lon, lat) {
   form.onsubmit = async function (event) {
     event.preventDefault();
 
+    /* GeoComment V1
+    {
+    "message": "string",
+    "longitude": 0,
+    "latitude": 0,
+    }
+    */
     const newGeoComment = {
       message: form.elements.message.value,
       longitude: form.elements.longitude.value,
@@ -99,11 +90,11 @@ function addNewGeoMessageForm(lon, lat) {
     console.log(geoComment);
 
     form.remove();
-    addGeoMessage(geoComment);
+    addGeoComment(geoComment);
   };
 }
 
-function clearAllGeoMessages() {
+function clearAllGeoComments() {
   const parent = document.querySelector("main");
 
   children = parent.querySelectorAll("div.message");
@@ -117,9 +108,9 @@ async function refreshGeoComments() {
   const geoComments = await response.json();
   console.log(geoComments);
 
-  clearAllGeoMessages();
-  for (const geoMessage of geoComments) {
-    addGeoMessage(geoMessage);
+  clearAllGeoComments();
+  for (const geoComment of geoComments) {
+    addGeoComment(geoComment);
   }
 }
 
@@ -130,7 +121,7 @@ async function refreshGeoComments() {
 
     const noFormExists = document.querySelector("main > form") === null;
     if (noFormExists) {
-      addNewGeoMessageForm(lon, lat);
+      addNewGeoCommentForm(lon, lat);
     }
   };
 
