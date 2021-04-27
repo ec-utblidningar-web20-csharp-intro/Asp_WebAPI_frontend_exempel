@@ -9,6 +9,9 @@ const mapUrl =
   "1080x640@2x" +
   `?access_token=${mapboxToken}`;
 
+const webApiHost = "https://localhost:44362";
+const webApiVersion = "/api/v1";
+
 const img = document.querySelector("#map");
 img.src = mapUrl;
 
@@ -48,7 +51,6 @@ function addNewGeoCommentForm(lon, lat) {
   form = addHtmlAtLonLat(
     /*html*/ `
         <form class="message">
-            <!--<label for="message">Vad vill du säga?</label><br />-->
             <input type="text" id="message" name="message" value="" placeholder="Vad vill du säga?"/><br />
 
             <label for="longitude">Lon:</label>
@@ -67,9 +69,9 @@ function addNewGeoCommentForm(lon, lat) {
 
     /* GeoComment V1
     {
-    "message": "string",
-    "longitude": 0,
-    "latitude": 0,
+      "message": "string",
+      "longitude": 0,
+      "latitude": 0,
     }
     */
     const newGeoComment = {
@@ -78,7 +80,7 @@ function addNewGeoCommentForm(lon, lat) {
       latitude: form.elements.latitude.value,
     };
 
-    const response = await fetch("https://localhost:44362/api/GeoComments", {
+    const response = await fetch(webApiHost + webApiVersion + "/geo-comments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -104,7 +106,7 @@ function clearAllGeoComments() {
 }
 
 async function refreshGeoComments() {
-  const response = await fetch("https://localhost:44362/api/GeoComments");
+  const response = await fetch(webApiHost + webApiVersion + "/geo-comments");
   const geoComments = await response.json();
   console.log(geoComments);
 
